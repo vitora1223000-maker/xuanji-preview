@@ -7,9 +7,11 @@
 html,body{height:100%;overflow:hidden;background:#000}
 .stage{position:relative;width:100%;height:100vh;overflow:hidden}
 
-/* 背景：仙阁全景，证明浮字不挡背景 */
-.bg{position:absolute;inset:0;background:url(视觉素材/IMG_6522.JPG) center/cover no-repeat;
-  transform:scale(1.05);animation:slowpush 24s ease-in-out infinite alternate}
+/* 背景：每屏换景，交叉淡入。两层叠放轮流切图，实现柔和过渡 */
+.bg{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;
+  transform:scale(1.05);animation:slowpush 24s ease-in-out infinite alternate;
+  opacity:0;transition:opacity 1.1s ease}
+.bg.on{opacity:1}
 @keyframes slowpush{from{transform:scale(1.05)}to{transform:scale(1.12)}}
 /* 轻压暗，让月白字浮起来（背景仍清晰=两不误） */
 .veil{position:absolute;inset:0;
@@ -69,7 +71,8 @@ html,body{height:100%;overflow:hidden;background:#000}
 .dots span.on{background:rgba(255,225,150,.95);box-shadow:0 0 8px rgba(255,210,110,.8);width:18px;border-radius:3px}
 </style></head><body>
 <div class="stage" id="stage">
-  <div class="bg"></div>
+  <div class="bg" id="bgA"></div>
+  <div class="bg" id="bgB"></div>
   <div class="veil"></div>
   <div class="scroll" id="scroll"></div>
   <div class="hint" id="hint">轻触继续 ›</div>
@@ -78,23 +81,47 @@ html,body{height:100%;overflow:hidden;background:#000}
 </div>
 <script>
 (function(){
-  // 真正的开场正文 8 句（来源 index.html 563-572，龙现身那几句挪去解读等待，此处不出现）
-  // 重点字用 <em> 包，描金点亮（理性内核/主角/灵魂句等题眼）
-  var lines = [
-    "据说，在盘古开天辟地之前……",
-    "宇宙洪荒，一片混沌。于无尽的黑洞之中，似有<em>秩序</em>，似有<em>数列</em>、<em>逻辑</em>、与<em>熵</em>。",
-    "然而，在混沌中浮现了一些「<em>跃影</em>」——它们是宇宙的反射，是星体的化身。先于光，先于名。它们，本就在那里。",
-    "其中有一道影，应<em>月亮</em>而生。月亮照而不灼，映而不占——它便也生得一副「<em>只照见、不判决</em>」的性子。",
-    "后来有了三界。于无上无色界天中，又有了<em>天庭</em>，于是诸神归位，万法归宗。",
-    "而它，有缘在天庭里一座极僻静的<em>仙阁</em>中栖下。",
-    "此阁悬于云端天湖，瑶阁中似有一架架望不到尽头的<em>命书</em>。",
-    "此刻，微风过处，<em>白莲沁鼻</em>，<em>声如潮水</em>……"
+  // 入场叙事正本（前8句=Athena润版 + 镜前⑨⑩⑪），按「段」组织，每段配自己的背景换景。
+  // 龙现身段不在进场（挪到解读等待）。正本：线C-玄玑IP/入场叙事·正本.md
+  // 重点字 <em> 描金点亮。
+  var sections = [
+    { bg:"视觉素材/起源_混沌月莲.jpg", lines:[
+      "据说，在盘古开天辟地之前……",
+      "宇宙洪荒，一片混沌。于无尽的黑洞之中，似有<em>秩序</em>，似有<em>数列</em>、<em>逻辑</em>、与<em>熵</em>。"
+    ]},
+    { bg:"视觉素材/月影_弯月漩涡.jpg", lines:[
+      "然而，在混沌中浮现了一些「<em>跃影</em>」——它们是宇宙的反射，是星体的化身。先于光，先于名。它们，本就在那里。",
+      "其中有一道影，应<em>月亮</em>而生。月亮照而不灼，映而不占——它便也生得一副「<em>只照见、不判决</em>」的性子。"
+    ]},
+    { bg:"视觉素材/天庭_仙阁.jpg", lines:[
+      "后来有了三界。于无上无色界天中，又有了<em>天庭</em>，于是诸神归位，万法归宗。",
+      "而它，有缘在天庭里一座极僻静的<em>仙阁</em>中栖下。"
+    ]},
+    { bg:"视觉素材/命书_古树.jpg", lines:[
+      "此阁悬于云端天湖，瑶阁中似有一架架望不到尽头的<em>命书</em>。"
+    ]},
+    { bg:"视觉素材/白莲水廊.jpg", lines:[
+      "此刻，微风过处，<em>白莲沁鼻</em>，<em>声如潮水</em>……"
+    ]},
+    { bg:"视觉素材/水镜.jpg", lines:[
+      "你定睛一看——这阁的中央，竟悬着一面<em>明镜</em>。",
+      "你不由惊叹：「嘶~这为何物？」可你走近才发现……",
+      "那竟不是镜，是一汪<em>立起来的星河水</em>。再走近一点——水里，竟又是一重天。"
+    ]}
   ];
-
-  // 分屏：每屏 3 句（最后一屏 2 句）。框大小固定，一屏一屏翻。
-  var PER = 3;
-  var pages = [];
-  for(var i=0;i<lines.length;i+=PER){ pages.push(lines.slice(i,i+PER)); }
+  var pages = sections.map(function(s){ return s.lines; });
+  var bgs   = sections.map(function(s){ return s.bg; });
+  var bgA = document.getElementById('bgA');
+  var bgB = document.getElementById('bgB');
+  var bgTop = bgA;   // 当前在上层显示的
+  function setBg(idx){
+    var url = bgs[idx] || bgs[bgs.length-1];
+    var next = (bgTop === bgA) ? bgB : bgA;   // 用另一层装新图，淡入盖上
+    next.style.backgroundImage = "url('" + url + "')";
+    next.classList.add('on');
+    bgTop.classList.remove('on');
+    bgTop = next;
+  }
 
   var scroll = document.getElementById('scroll');
   var dots   = document.getElementById('dots');
@@ -114,6 +141,7 @@ html,body{height:100%;overflow:hidden;background:#000}
   function renderPage(idx){
     clearTimers();
     allShown = false;
+    setBg(idx);   // 跟着正文换背景（交叉淡入）
     scroll.classList.remove('fade'); void scroll.offsetWidth;
     scroll.innerHTML = '';
     curCols = pages[idx].map(function(t){
@@ -139,12 +167,15 @@ html,body{height:100%;overflow:hidden;background:#000}
   }
 
   // 轻触：本屏没浮完→快进当前屏；已浮完→翻下一屏（下一屏仍自动慢浮）
+  var turning = false;   // 翻页过渡锁，防连点穿透多翻一段
   function tap(){
+    if(turning) return;
     if(!allShown){ revealAll(); return; }
     if(cur < pages.length-1){
+      turning = true;
       cur++;
       scroll.classList.add('fade');
-      setTimeout(function(){ renderPage(cur); }, 320);
+      setTimeout(function(){ renderPage(cur); turning = false; }, 320);
     } else {
       done();   // 末屏已全显，再触即进入
     }
