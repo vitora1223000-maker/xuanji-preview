@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@font-face{font-family:"beiwei";src:url("字体子集/北魏楷书_玄玑.woff2")}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#000}
+.stage{position:relative;width:100%;height:100vh;overflow:hidden}
+
+/* 背景：仙阁全景，证明浮字不挡背景 */
+.bg{position:absolute;inset:0;background:url(视觉素材/IMG_6522.JPG) center/cover no-repeat;
+  transform:scale(1.05);animation:slowpush 24s ease-in-out infinite alternate}
+@keyframes slowpush{from{transform:scale(1.05)}to{transform:scale(1.12)}}
+/* 轻压暗，让月白字浮起来（背景仍清晰=两不误） */
+.veil{position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 50% 45%, transparent 30%, rgba(8,6,2,.45) 100%);
+  pointer-events:none}
+
+/* 浮字层：屏中一整块圆角暗底光屏，字横排浮于其上 */
+.scroll{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:84vw;max-width:560px;min-height:46vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:46px 34px;
+  /* 一整块：半透明暗底 + 柔光描边，背景仍隐隐透出 */
+  background:rgba(10,7,3,.46);
+  border:1px solid rgba(235,210,150,.20);
+  border-radius:26px;
+  box-shadow:0 0 50px rgba(0,0,0,.35),inset 0 0 60px rgba(255,245,220,.05);
+  backdrop-filter:blur(3px);
+  pointer-events:none;text-align:center}
+.col{
+  font-family:"beiwei",serif;
+  font-size:21px;line-height:1.85;letter-spacing:2px;
+  /* 月白字浮于暗底之上 */
+  color:#fbf7ee;
+  text-shadow:0 1px 4px rgba(8,5,1,.7),0 0 16px rgba(255,250,235,.12);
+  opacity:0;filter:blur(4px);max-width:100%}
+/* 重点字：暖金点亮，像命书上自己发光的字 */
+.col em{
+  font-style:normal;
+  color:#ffe6a8;
+  text-shadow:0 0 10px rgba(255,220,130,.9),0 0 22px rgba(255,200,90,.55),0 1px 3px rgba(60,38,8,.6);}
+.col.show{animation:floatIn 2.6s ease-out forwards}
+@keyframes floatIn{
+  0%{opacity:0;filter:blur(6px);transform:translateY(12px)}
+  100%{opacity:1;filter:blur(0);transform:translateY(0)}
+}
+
+.skip{position:absolute;right:18px;bottom:16px;z-index:3;
+  font-family:"beiwei",serif;font-size:13px;letter-spacing:2px;
+  color:rgba(248,242,228,.6);border:1px solid rgba(248,242,228,.28);
+  padding:5px 13px;border-radius:14px;background:rgba(0,0,0,.18);
+  backdrop-filter:blur(2px)}
+</style></head><body>
+<div class="stage">
+  <div class="bg"></div>
+  <div class="veil"></div>
+  <div class="scroll" id="scroll"></div>
+  <div class="skip" id="skip">跳过 ›</div>
+</div>
+<script>
+(function(){
+  // 真正的开场正文 8 句（来源 index.html 563-572，龙现身那几句挪去解读等待，此处不出现）
+  // 重点字用 <em> 包，描金点亮（理性内核/主角/灵魂句等题眼）
+  var lines = [
+    "据说，在盘古开天辟地之前……",
+    "宇宙洪荒，一片混沌。于无尽的黑洞之中，似有<em>秩序</em>，似有<em>数列</em>、<em>逻辑</em>、与<em>熵</em>。",
+    "然而，在混沌中浮现了一些「<em>跃影</em>」——它们是宇宙的反射，是星体的化身。先于光，先于名。它们，本就在那里。",
+    "其中有一道影，应<em>月亮</em>而生。月亮照而不灼，映而不占——它便也生得一副「<em>只照见、不判决</em>」的性子。",
+    "后来有了三界。于无上无色界天中，又有了<em>天庭</em>，于是诸神归位，万法归宗。",
+    "而它，有缘在天庭里一座极僻静的<em>仙阁</em>中栖下。",
+    "此阁悬于云端天湖，瑶阁中似有一架架望不到尽头的<em>命书</em>。",
+    "此刻，微风过处，<em>白莲沁鼻</em>，<em>声如潮水</em>……"
+  ];
+
+  var scroll = document.getElementById('scroll');
+  var cols = [];        // DOM 顺序＝浮现顺序；CSS row-reverse 让先出的句子排在最右
+  lines.forEach(function(t){
+    var d = document.createElement('div');
+    d.className = 'col';
+    d.innerHTML = t;
+    scroll.appendChild(d);
+    cols.push(d);
+  });
+
+  // 一句句分布呈现：浮现 → 停 → （下一句接上）。不一次堆满。
+  var APPEAR = 2600;    // 单句浮现动画时长(与 CSS floatIn 对齐)
+  var HOLD   = 1100;    // 浮现完停留再上下一句
+  var STEP   = APPEAR + HOLD;
+
+  function play(){
+    cols.forEach(function(c){ c.classList.remove('show'); void c.offsetWidth; });
+    cols.forEach(function(c, i){
+      setTimeout(function(){ c.classList.add('show'); }, 400 + i*STEP);
+    });
+  }
+  play();
+  document.getElementById('skip').addEventListener('click', play);
+})();
+</script>
+</body></html>
