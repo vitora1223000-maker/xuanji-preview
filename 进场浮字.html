@@ -99,39 +99,54 @@ html,body{height:100%;overflow:hidden;background:#000}
   var scroll = document.getElementById('scroll');
   var dots   = document.getElementById('dots');
   var hint   = document.getElementById('hint');
-  var STEP = 1500;   // 屏内逐句浮现间隔
-  var cur = -1, busy = false;
+  var STEP = 1500;   // 屏内逐行浮现间隔（默认自动慢浮，营造仙气）
+  var cur = -1;
+  var curCols = [];      // 当前屏的句子节点
+  var timers = [];       // 当前屏排队中的浮现定时器
+  var allShown = false;  // 当前屏是否已全部浮现
 
   // 页码点
   pages.forEach(function(){ var s=document.createElement('span'); dots.appendChild(s); });
   function markDot(){ [].forEach.call(dots.children,function(s,i){ s.className = i===cur?'on':''; }); }
 
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
   function renderPage(idx){
-    busy = true;
+    clearTimers();
+    allShown = false;
     scroll.classList.remove('fade'); void scroll.offsetWidth;
     scroll.innerHTML = '';
-    var cols = pages[idx].map(function(t){
+    curCols = pages[idx].map(function(t){
       var d=document.createElement('div'); d.className='col'; d.innerHTML=t;
       scroll.appendChild(d); return d;
     });
-    // 整屏 3 句一起快速淡入（点继续即出，不用等逐句排队）
-    requestAnimationFrame(function(){
-      cols.forEach(function(c){ c.classList.add('show'); });
+    // 默认：不点也会一行一行自动浮现
+    curCols.forEach(function(c,i){
+      timers.push(setTimeout(function(){
+        c.classList.add('show');
+        if(i === curCols.length-1) allShown = true;   // 最后一行浮完=本屏全显
+      }, 300 + i*STEP));
     });
-    setTimeout(function(){ busy=false; }, 360);   // 淡入很快即可翻下一屏
     markDot();
-    // 末屏把提示换成「进入」语气
     hint.textContent = (idx>=pages.length-1) ? '轻触，入镜 ›' : '轻触继续 ›';
   }
 
-  function next(){
-    if(busy) return;
+  // 把当前屏立即全部显出（快进）
+  function revealAll(){
+    clearTimers();
+    curCols.forEach(function(c){ c.classList.add('show'); });
+    allShown = true;
+  }
+
+  // 轻触：本屏没浮完→快进当前屏；已浮完→翻下一屏（下一屏仍自动慢浮）
+  function tap(){
+    if(!allShown){ revealAll(); return; }
     if(cur < pages.length-1){
       cur++;
-      scroll.classList.add('fade');      // 当前屏先淡出
+      scroll.classList.add('fade');
       setTimeout(function(){ renderPage(cur); }, 320);
     } else {
-      done();                            // 已是末屏：再触即进入
+      done();   // 末屏已全显，再触即进入
     }
   }
 
@@ -140,22 +155,23 @@ html,body{height:100%;overflow:hidden;background:#000}
     document.getElementById('skip').textContent = '（此处接：排盘）';
   }
 
-  // 首屏
+  // 首屏（自动慢浮）
   cur = 0; renderPage(0);
 
-  // 手动翻页：点屏幕 / 上划
+  // 轻触：点屏幕 / 上划
   document.getElementById('stage').addEventListener('click', function(e){
     if(e.target.id==='skip') return;
-    next();
+    tap();
   });
   var ty=0;
   document.getElementById('stage').addEventListener('touchstart',function(e){ ty=e.touches[0].clientY; },{passive:true});
   document.getElementById('stage').addEventListener('touchend',function(e){
-    if(ty - e.changedTouches[0].clientY > 40) next();   // 上划
+    if(ty - e.changedTouches[0].clientY > 40) tap();   // 上划同轻触
   },{passive:true});
 
+  // 跳过：整段直接进排盘
   document.getElementById('skip').addEventListener('click', function(e){
-    e.stopPropagation(); done();
+    e.stopPropagation(); clearTimers(); done();
   });
 })();
 </script>
