@@ -85,25 +85,25 @@ html,body{height:100%;overflow:hidden;background:#000}
   // 龙现身段不在进场（挪到解读等待）。正本：线C-玄玑IP/入场叙事·正本.md
   // 重点字 <em> 描金点亮。
   var sections = [
-    { bg:"视觉素材/起源_混沌月莲.jpg", lines:[
+    { bg:"视觉素材/起源_混沌月莲.webp", lines:[
       "据说，在盘古开天辟地之前……",
       "宇宙洪荒，一片混沌。于无尽的黑洞之中，似有<em>秩序</em>，似有<em>数列</em>、<em>逻辑</em>、与<em>熵</em>。"
     ]},
-    { bg:"视觉素材/月影_弯月漩涡.jpg", lines:[
+    { bg:"视觉素材/月影_弯月漩涡.webp", lines:[
       "然而，在混沌中浮现了一些「<em>跃影</em>」——它们是宇宙的反射，是星体的化身。先于光，先于名。它们，本就在那里。",
       "其中有一道影，应<em>月亮</em>而生。月亮照而不灼，映而不占——它便也生得一副「<em>只照见、不判决</em>」的性子。"
     ]},
-    { bg:"视觉素材/天庭_仙阁.jpg", lines:[
+    { bg:"视觉素材/天庭_仙阁.webp", lines:[
       "后来有了三界。于无上无色界天中，又有了<em>天庭</em>，于是诸神归位，万法归宗。",
       "而它，有缘在天庭里一座极僻静的<em>仙阁</em>中栖下。"
     ]},
-    { bg:"视觉素材/命书_古树.jpg", lines:[
+    { bg:"视觉素材/命书_古树.webp", lines:[
       "此阁悬于云端天湖，瑶阁中似有一架架望不到尽头的<em>命书</em>。"
     ]},
-    { bg:"视觉素材/白莲水廊.jpg", lines:[
+    { bg:"视觉素材/白莲水廊.webp", lines:[
       "此刻，微风过处，<em>白莲沁鼻</em>，<em>声如潮水</em>……"
     ]},
-    { bg:"视觉素材/水镜.jpg", lines:[
+    { bg:"视觉素材/水镜.webp", lines:[
       "你定睛一看——这阁的中央，竟悬着一面<em>明镜</em>。",
       "你不由惊叹：「嘶~这为何物？」可你走近才发现……",
       "那竟不是镜，是一汪<em>立起来的星河水</em>。再走近一点——水里，竟又是一重天。"
@@ -122,6 +122,8 @@ html,body{height:100%;overflow:hidden;background:#000}
     bgTop.classList.remove('on');
     bgTop = next;
   }
+  // ⭐预加载所有背景图：页面一开就下载进缓存，翻页时秒切不卡顿
+  bgs.forEach(function(u){ var im = new Image(); im.src = u; });
 
   var scroll = document.getElementById('scroll');
   var dots   = document.getElementById('dots');
