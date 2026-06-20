@@ -7,12 +7,9 @@
 html,body{height:100%;overflow:hidden;background:#000}
 .stage{position:relative;width:100%;height:100vh;overflow:hidden}
 
-/* 背景：每屏换景，交叉淡入。两层叠放轮流切图，实现柔和过渡 */
+/* 背景：每屏换景，交叉淡入。两层叠放轮流切图。opacity 由 JS 直控(避免 class/transition 竞态黑屏) */
 .bg{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat;
-  transform:scale(1.05);animation:slowpush 24s ease-in-out infinite alternate;
-  opacity:0;transition:opacity 1.1s ease}
-.bg.on{opacity:1}
-@keyframes slowpush{from{transform:scale(1.05)}to{transform:scale(1.12)}}
+  transform:scale(1.06);opacity:0;transition:opacity 1.1s ease}
 /* 轻压暗，让月白字浮起来（背景仍清晰=两不误） */
 .veil{position:absolute;inset:0;
   background:radial-gradient(120% 90% at 50% 45%, transparent 30%, rgba(8,6,2,.45) 100%);
@@ -118,8 +115,10 @@ html,body{height:100%;overflow:hidden;background:#000}
     var url = bgs[idx] || bgs[bgs.length-1];
     var next = (bgTop === bgA) ? bgB : bgA;   // 用另一层装新图，淡入盖上
     next.style.backgroundImage = "url('" + url + "')";
-    next.classList.add('on');
-    bgTop.classList.remove('on');
+    next.style.opacity = '0';                  // 先归零
+    void next.offsetWidth;                     // reflow，确立过渡起点
+    next.style.opacity = '1';                  // JS 直控淡入(不靠 class，无竞态)
+    bgTop.style.opacity = '0';                 // 旧层淡出
     bgTop = next;
   }
   // ⭐预加载所有背景图：页面一开就下载进缓存，翻页时秒切不卡顿
