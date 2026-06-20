@@ -149,8 +149,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>✦ 玄玑 · Astrology ✦</h1>
-  <div class="sub" id="now">解构人性 · 主宰人生 · 游戏玩家从不做 NPC</div>
+  <div id="now" style="display:none"></div><!-- 保留占位防JS报错·不显示 -->
   <div id="view"></div>
   <!-- 对外版: prompt框隐藏(仅后台生成, 不给访客看) -->
   <div class="card" id="promptCard" style="display:none">
@@ -455,8 +454,8 @@ function renderNatalTab(){
         <div class="form-row"><label></label><span class="hint" style="margin:0;cursor:pointer;flex:1" id="toggleLL">海外出生 / 找不到？→ 点这里手填经纬度</span></div>
         <div class="form-row"><label>身为</label>
           <div class="seg" id="bSex"><div class="opt on" data-v="女">女</div><div class="opt" data-v="男">男</div></div></div>
-        <div class="hint">💫 镜只照见你、读你的能量与课题，不预言吉凶、不替你做决定 —— 路怎么走，始终由你。</div>
-        <button class="btn" id="calcNatal">观 照 ›</button>
+        <div class="hint">💫 镜只照见你，不言吉凶，不语妄断——只助你看懂人生说明书。</div>
+        <button class="btn" id="calcNatal">观照</button>
       </div>
       <div id="natalResult"></div>
     </div>`;
