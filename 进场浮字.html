@@ -44,7 +44,7 @@ html,body{height:100%;overflow:hidden;background:#000}
   font-style:normal;
   color:#ffe6a8;
   text-shadow:0 0 10px rgba(255,220,130,.9),0 0 22px rgba(255,200,90,.55),0 1px 3px rgba(60,38,8,.6);}
-.col.show{animation:floatIn 2.6s ease-out forwards}
+.col.show{animation:floatIn .5s ease-out forwards}
 @keyframes floatIn{
   0%{opacity:0;filter:blur(6px);transform:translateY(12px)}
   100%{opacity:1;filter:blur(0);transform:translateY(0)}
@@ -114,9 +114,11 @@ html,body{height:100%;overflow:hidden;background:#000}
       var d=document.createElement('div'); d.className='col'; d.innerHTML=t;
       scroll.appendChild(d); return d;
     });
-    cols.forEach(function(c,i){ setTimeout(function(){ c.classList.add('show'); }, 300+i*STEP); });
-    // 这屏浮完后解锁，可翻下一屏
-    setTimeout(function(){ busy=false; }, 300 + cols.length*STEP);
+    // 整屏 3 句一起快速淡入（点继续即出，不用等逐句排队）
+    requestAnimationFrame(function(){
+      cols.forEach(function(c){ c.classList.add('show'); });
+    });
+    setTimeout(function(){ busy=false; }, 360);   // 淡入很快即可翻下一屏
     markDot();
     // 末屏把提示换成「进入」语气
     hint.textContent = (idx>=pages.length-1) ? '轻触，入镜 ›' : '轻触继续 ›';
