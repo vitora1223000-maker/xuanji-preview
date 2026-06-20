@@ -6,23 +6,17 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:-apple-system,"PingFang SC",serif}
 .stage{position:relative;width:100%;min-height:100vh;overflow:hidden;background:#0c0a12}
-/* 背景：神仙虾初见 */
-.bg{position:absolute;inset:0;background:url(视觉素材/神仙虾_初见.webp) center/cover no-repeat}
-/* 下半压暗，让排盘卡片浮起来、字读得清；上半留出神仙虾的脸 */
+/* 背景：神仙虾撩水（图19·6620） */
+.bg{position:absolute;inset:0;background:url(视觉素材/观照_撩水.webp) center/cover no-repeat}
+/* 下半压暗，让卡片浮起来、字读得清；上半留出神仙虾的脸 */
 .veil{position:absolute;inset:0;background:linear-gradient(to bottom,
-   rgba(8,6,16,0) 0%, rgba(8,6,16,0) 38%, rgba(8,6,16,.55) 62%, rgba(6,4,12,.82) 100%);
+   rgba(8,6,16,0) 0%, rgba(8,6,16,0) 40%, rgba(8,6,16,.5) 60%, rgba(6,4,12,.85) 100%);
    pointer-events:none}
 
 .wrap{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;
    justify-content:flex-end;padding:0 22px 30px}
 
-/* 神仙虾开口·剧情引导句 */
-.speak{font-family:"beiwei",serif;color:#fbf7ee;text-align:center;
-   font-size:18px;line-height:1.85;letter-spacing:1px;margin-bottom:18px;
-   text-shadow:0 1px 6px rgba(0,0,0,.8),0 0 18px rgba(255,250,235,.15)}
-.speak em{font-style:normal;color:#ffe6a8;text-shadow:0 0 10px rgba(255,210,120,.8)}
-
-/* 报生辰卡片：玻璃拟态·仙气 */
+/* 观照镜卡片：玻璃拟态·仙气 */
 .card{background:rgba(14,10,22,.46);border:1px solid rgba(235,210,150,.22);
    border-radius:22px;padding:22px 18px 20px;backdrop-filter:blur(7px);
    box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 0 50px rgba(255,245,220,.04)}
@@ -33,11 +27,11 @@ html,body{height:100%;font-family:-apple-system,"PingFang SC",serif}
 
 .field{margin-bottom:12px}
 .field label{display:block;color:rgba(255,235,200,.8);font-size:12px;letter-spacing:1px;margin-bottom:5px}
-.field input,.field select{width:100%;border:1px solid rgba(235,210,150,.28);
-   border-radius:12px;padding:11px 13px;font-size:15px;
+.field input,.field select{width:100%;min-width:0;border:1px solid rgba(235,210,150,.28);
+   border-radius:12px;padding:11px 12px;font-size:15px;-webkit-appearance:none;appearance:none;
    background:rgba(255,255,255,.06);color:#fbf7ee;outline:none}
 .field input::-webkit-calendar-picker-indicator{filter:invert(.85)}
-.row{display:flex;gap:10px}.row .field{flex:1}
+.row{display:flex;gap:10px}.row .field{flex:1;min-width:0}
 
 /* 照命按钮：金光 */
 .go{width:100%;margin-top:8px;border:none;border-radius:14px;padding:15px;
@@ -52,13 +46,8 @@ html,body{height:100%;font-family:-apple-system,"PingFang SC",serif}
   <div class="veil"></div>
   <div class="wrap">
 
-    <div class="speak">
-      它抬手，修长的指尖流淌着天河之水——<br>
-      「既然如此……来，<em>报上你的生辰</em>，我替你，照一照。」
-    </div>
-
     <div class="card">
-      <div class="ttl">照 命 镜</div>
+      <div class="ttl">观 照 镜</div>
       <div class="sub">生辰越准，镜照得越真 · 信息只在本机推算，不上传</div>
 
       <div class="field">
@@ -80,7 +69,7 @@ html,body{height:100%;font-family:-apple-system,"PingFang SC",serif}
         <input type="text" placeholder="如：杭州 / 找不到可手填经纬度" value="杭州">
       </div>
 
-      <button class="go">入 镜 · 照 命 ›</button>
+      <button class="go">观 照 ›</button>
       <div class="tip">— 玄玑天庭 · 文澜阁 · 神仙虾 为你照命 —</div>
     </div>
 
