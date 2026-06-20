@@ -142,9 +142,20 @@
   .hint{color:rgba(248,242,228,.6) !important;background:rgba(255,255,255,.05) !important;border-radius:10px}
   .seg .opt.on{background:linear-gradient(120deg,#e8c25a,#ffe9a8) !important;color:#3a2a08 !important}
   /* 观照按钮：金光 */
-  #calcNatal{font-family:"beiwei",serif !important;letter-spacing:5px !important;
+  #calcNatal{font-family:"beiwei",serif !important;letter-spacing:8px !important;
     background:linear-gradient(120deg,#e8c25a,#ffe9a8 50%,#e0b34a) !important;color:#3a2a08 !important;
     box-shadow:0 6px 26px rgba(220,170,60,.5),0 0 30px rgba(255,220,120,.3) !important}
+  /* 下方解读/二维码区：紫色统一改金色仙气 */
+  .btn{background:linear-gradient(120deg,#e8c25a,#ffe9a8 50%,#e0b34a) !important;
+    color:#3a2a08 !important;box-shadow:0 6px 22px rgba(220,170,60,.4) !important}
+  .seg .opt.on{background:linear-gradient(120deg,#e8c25a,#ffe9a8) !important;color:#3a2a08 !important}
+  .read-card{background:linear-gradient(160deg,rgba(232,201,118,.14),rgba(40,30,12,.3)) !important;
+    border:1px solid rgba(235,210,150,.28) !important}
+  .ask-card{background:linear-gradient(160deg,rgba(232,201,118,.12),rgba(40,30,12,.25)) !important;
+    border:1px solid rgba(235,210,150,.35) !important}
+  .big3{background:linear-gradient(135deg,rgba(232,201,118,.14),rgba(255,235,180,.08)) !important}
+  .axis .ax,.asp-tag{background:rgba(235,210,150,.1) !important}
+  .hint{background:rgba(235,210,150,.07) !important}
 </style>
 </head>
 <body>
@@ -433,7 +444,8 @@ function renderNatalTab(){
       <h2 class="natal-ttl">观 照 镜</h2>
       <div class="natal-lead">报上你的生辰，镜方照见你 · 越准，照得越真</div>
       <div id="natalForm">
-        <div class="form-row"><label>生于何日</label><input type="date" id="bDate"></div>
+        <div class="form-row"><label>生于何日</label>
+          <select id="bY"></select><select id="bM"></select><select id="bD"></select></div>
         <div class="form-row"><label>生于何时</label><input type="time" id="bTime" value="12:00">
           <select id="bTz">
             <option value="8" selected>+8 北京/中国</option>
@@ -464,9 +476,27 @@ function renderNatalTab(){
     document.querySelectorAll("#bSex .opt").forEach(o=>o.onclick=()=>{document.querySelectorAll("#bSex .opt").forEach(x=>x.classList.remove("on"));o.classList.add("on");});
     document.getElementById("calcNatal").onclick=doCalcNatal;
     initCitySelect();
+    initDateSelect();
   }
   // prompt卡: natal模式下默认空着, 算完才填
   if(!natalResult) document.getElementById("prompt").textContent="排好盘后，这里会生成喂给伟大的占星师的深度解读 Prompt。";
+}
+
+// 生日：年/月/日三下拉（直接滚选，不弹iOS日历、不打勾、不退出）
+function initDateSelect(){
+  const yS=document.getElementById("bY"),mS=document.getElementById("bM"),dS=document.getElementById("bD");
+  if(!yS||yS.options.length) return;
+  const opt=(v,t)=>`<option value="${v}">${t}</option>`;
+  let yh='<option value="">年</option>'; for(let y=2025;y>=1950;y--) yh+=opt(y,y+"年");
+  let mh='<option value="">月</option>'; for(let m=1;m<=12;m++) mh+=opt(m,m+"月");
+  yS.innerHTML=yh; mS.innerHTML=mh;
+  function fillDays(){
+    const y=+yS.value||2000,m=+mS.value||1, dim=new Date(y,m,0).getDate();
+    const cur=dS.value; let dh='<option value="">日</option>';
+    for(let d=1;d<=dim;d++) dh+=opt(d,d+"日");
+    dS.innerHTML=dh; if(cur&&+cur<=dim) dS.value=cur;
+  }
+  fillDays(); yS.onchange=fillDays; mS.onchange=fillDays;
 }
 
 // 省市区三级联动
@@ -487,7 +517,9 @@ function initCitySelect(){
 }
 
 function doCalcNatal(){
-  const dateStr=document.getElementById("bDate").value, timeStr=document.getElementById("bTime").value||"12:00";
+  const _y=document.getElementById("bY").value,_m=document.getElementById("bM").value,_d=document.getElementById("bD").value;
+  const dateStr=(_y&&_m&&_d)?`${_y}-${String(_m).padStart(2,'0')}-${String(_d).padStart(2,'0')}`:"";
+  const timeStr=document.getElementById("bTime").value||"12:00";
   if(!dateStr){alert("请先填出生日期");return;}
   const [y,mo,d]=dateStr.split("-").map(Number);
   const [h,mi]=timeStr.split(":").map(Number);
@@ -552,16 +584,6 @@ function renderNatalResult(N){
      <button class="btn read-btn" id="aiRead">✨ 让伟大的占星师为我解读</button>
      <div class="read-by">— 解读者 · 玄玑天庭 文澜阁 · 神仙虾 —</div>
      <div id="aiReadOut" class="read-out" style="display:none"></div>
-   </div>
-   <div class="ask-card">
-     <div class="ask-title">✦ 想要更深的精解吗？</div>
-     <div class="ask-desc">上面是文澜阁神仙虾为你读的核心。若想把事业、正缘、财富这三条线<b>逐年看透</b>，或亲自问一问你这一生的修行课题——</div>
-     <div class="ask-qr">
-       <img src="qr-only.png" alt="玄玑老师 · 小红书二维码" class="qr-img">
-       <div class="qr-text">扫码在小红书<br>找「山玉居士」<br><span class="qr-sub">以占星解构人性<br>用数学逻辑主宰人生</span></div>
-     </div>
-     <div class="ask-or">— 或 —</div>
-     <button class="btn" id="copyShare">📋 复制我的星盘 · 私信发给玄玑老师</button>
    </div>`;
   document.getElementById("natalResult").innerHTML=html;
   // 绑定"让玄玑当场深度解读"——流式调后端 /api/read
