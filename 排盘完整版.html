@@ -159,25 +159,29 @@
   .hint{background:rgba(235,210,150,.07) !important}
 
   /* ===== 功德+1 隐性机关 ===== */
-  /* 触点：藏在上方神仙虾画面里(撩水的手/水花处)，克制·不明说·只在悬停时微微一亮 */
-  #meritDot{position:fixed;left:50%;top:14vh;transform:translateX(-50%);
-    width:160px;height:200px;border-radius:50%/40%;z-index:5;cursor:pointer;
+  /* 触点：罩住上方神仙虾画面中央一大片(脸+胸口)，戳哪都中。
+     中心留一团极淡的呼吸光晕(克制·不明说)，是给好奇者的彩蛋。 */
+  #meritDot{position:fixed;left:50%;top:6vh;transform:translateX(-50%);
+    width:78vw;height:34vh;z-index:5;cursor:pointer;
     -webkit-tap-highlight-color:transparent;
-    /* 极淡的光晕，几乎看不见，引导好奇的人去点 */
-    background:radial-gradient(circle, rgba(255,228,150,.10) 0%, transparent 68%);
+    /* 光晕只在正中聚一小团，淡到几乎看不见 */
+    background:radial-gradient(circle at 50% 50%, rgba(255,228,150,.10) 0%, transparent 34%);
     animation:meritBreathe 3.6s ease-in-out infinite}
-  @keyframes meritBreathe{0%,100%{opacity:.35}50%{opacity:.8}}
-  #meritDot:active{transform:translateX(-50%) scale(.9)}
+  @keyframes meritBreathe{0%,100%{opacity:.35}50%{opacity:.85}}
+  #meritDot:active{transform:translateX(-50%) scale(.97)}
   /* 浮字：点中后金字上浮淡出 */
   #meritPop{position:fixed;left:50%;top:17vh;transform:translateX(-50%);z-index:6;
     font-family:"beiwei",serif;font-size:20px;letter-spacing:3px;
     color:#ffe6a8;text-shadow:0 0 12px rgba(255,210,120,.9),0 0 26px rgba(255,190,80,.5);
     pointer-events:none;opacity:0}
-  #meritPop.go{animation:meritFloat 1.25s ease-out forwards}
+  /* 慢一些、停留久一些：飘起后定住一会儿才缓缓淡出上升 */
+  #meritPop.go{animation:meritFloat 2.8s ease-out forwards}
   @keyframes meritFloat{
-    0%{opacity:0;transform:translate(-50%,6px) scale(.85)}
-    18%{opacity:1;transform:translate(-50%,-2px) scale(1.05)}
-    100%{opacity:0;transform:translate(-50%,-46px) scale(1)}}
+    0%{opacity:0;transform:translate(-50%,8px) scale(.8)}
+    14%{opacity:1;transform:translate(-50%,-2px) scale(1.08)}
+    24%{opacity:1;transform:translate(-50%,-6px) scale(1)}
+    62%{opacity:1;transform:translate(-50%,-14px) scale(1)}   /* 中段定住，看得久 */
+    100%{opacity:0;transform:translate(-50%,-64px) scale(1)}}
 </style>
 </head>
 <body>
