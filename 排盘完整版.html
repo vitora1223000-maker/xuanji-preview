@@ -683,8 +683,17 @@ async function runAIRead(N,btn){
     btn.disabled=false;
   }catch(e){
     clearInterval(waitTimer); // 停等待轮播
-    out.innerHTML='<span style="color:var(--soft)">神仙虾暂时连不上 😣 请稍后再点一次。</span>';
-    btn.textContent="✨ 重试一次";
+    // 连不上＝不露技术破绽，用神仙虾人设把"故障"包装成剧情。5句随机，多试不重样＝小彩蛋。
+    const offline=[
+      "🐉 神仙虾正遨游于云海深处，<br>一时未应你的唤……<br><br>稍候片刻，再轻唤它一声。",
+      "😴 这家伙……方才竟懒懒打了个盹儿，<br>没接住你飘来的灵韵。<br><br>别恼，再唤它一次——<br>这回，它定听得真切。",
+      "🌸 它正蜷在莲池边赏云，<br>装作没听见你的唤。<br><br>别依它这傲性子——<br>再叫一声，准能把它拽回来。",
+      "🐲 它正和自家那条白龙闹别扭，<br>一时腾不出手来。<br><br>稍等片刻，待它哄好了那条龙，<br>自会来为你照镜。",
+      "🌙 「凡人，何其性急。」<br>它造镜之手尚未落下，<br><br>稍安勿躁，再轻叩一次——<br>它自会为你推演这局命数。"
+    ];
+    const pick=offline[Math.floor(Math.random()*offline.length)];
+    out.innerHTML='<span style="color:#ffe6a8;font-size:14.5px;line-height:1.95">'+pick+'</span>';
+    btn.textContent="✨ 再唤它一次";
     btn.disabled=false;
   }
 }
