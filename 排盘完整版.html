@@ -160,8 +160,8 @@
 
   /* ===== 功德+1 隐性机关 ===== */
   /* 触点：藏在上方神仙虾画面里(撩水的手/水花处)，克制·不明说·只在悬停时微微一亮 */
-  #meritDot{position:fixed;left:50%;top:30vh;transform:translateX(-50%);
-    width:64px;height:64px;border-radius:50%;z-index:5;cursor:pointer;
+  #meritDot{position:fixed;left:50%;top:17vh;transform:translateX(-50%);
+    width:96px;height:96px;border-radius:50%;z-index:5;cursor:pointer;
     -webkit-tap-highlight-color:transparent;
     /* 极淡的光晕，几乎看不见，引导好奇的人去点 */
     background:radial-gradient(circle, rgba(255,228,150,.10) 0%, transparent 68%);
@@ -169,7 +169,7 @@
   @keyframes meritBreathe{0%,100%{opacity:.35}50%{opacity:.8}}
   #meritDot:active{transform:translateX(-50%) scale(.9)}
   /* 浮字：点中后金字上浮淡出 */
-  #meritPop{position:fixed;left:50%;top:30vh;transform:translateX(-50%);z-index:6;
+  #meritPop{position:fixed;left:50%;top:17vh;transform:translateX(-50%);z-index:6;
     font-family:"beiwei",serif;font-size:20px;letter-spacing:3px;
     color:#ffe6a8;text-shadow:0 0 12px rgba(255,210,120,.9),0 0 26px rgba(255,190,80,.5);
     pointer-events:none;opacity:0}
@@ -470,7 +470,7 @@ function renderNatalTab(){
     v.innerHTML=`
     <div class="card">
       <h2 class="natal-ttl">观 照 镜</h2>
-      <div class="natal-lead">报上你的生辰，镜方照见你 · 越准，照得越真</div>
+      <div class="natal-lead">🪞 报上你的生辰，镜方照见你 · 越准，照得越真</div>
       <div id="natalForm">
         <div class="form-row"><label>生于何日</label>
           <select id="bY"></select><select id="bM"></select><select id="bD"></select></div>

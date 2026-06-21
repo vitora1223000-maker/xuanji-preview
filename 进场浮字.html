@@ -49,13 +49,13 @@ html,body{height:100%;overflow:hidden;background:#000}
   100%{opacity:1;filter:blur(0);transform:translateY(0)}
 }
 
-/* 跳过：留在右下角，往上抬避开iPhone底部手势条；加深底色+描边让它在星空上看得见，但仍克制 */
-.skip{position:absolute;right:16px;bottom:calc(30px + env(safe-area-inset-bottom));z-index:4;
+/* 跳过：低存在感的退路，不抢戏。无底框、淡字，跟"轻触继续"一个调性。
+   只把位置往上抬，避开iPhone底部手势条(原贴底被盖住才看不见) */
+.skip{position:absolute;right:18px;bottom:calc(30px + env(safe-area-inset-bottom));z-index:4;
   font-family:"beiwei",serif;font-size:13px;letter-spacing:2px;
-  color:rgba(255,244,224,.92);border:1px solid rgba(255,228,170,.5);
-  padding:6px 15px;border-radius:16px;background:rgba(20,14,6,.5);
-  box-shadow:0 2px 12px rgba(0,0,0,.4);
-  backdrop-filter:blur(4px)}
+  color:rgba(248,242,228,.55);
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+  padding:5px 6px}
 /* 轻触提示：呼吸闪烁，引导手动翻页 */
 .hint{position:absolute;left:0;right:0;bottom:58px;z-index:3;text-align:center;
   font-family:"beiwei",serif;font-size:13px;letter-spacing:3px;
